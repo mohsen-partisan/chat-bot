@@ -1,7 +1,7 @@
 {
-  "intents": "/data",
-  "words": "",
-  "classes": "",
-  "saved_model": ""
+  "intents": "data/intents.json",
+  "words": "words.pkl",
+  "classes": "classes.pkl",
+  "saved_model": "chatbot_model.h5"
 
 }
