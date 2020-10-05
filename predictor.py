@@ -1,4 +1,6 @@
 import nltk
+nltk.download('punkt')
+nltk.download('wordnet')
 from nltk.stem import WordNetLemmatizer
 lemmatizer = WordNetLemmatizer()
 import pickle
@@ -10,14 +12,14 @@ import config_reader
 
 model = load_model(config_reader.model_path)
 intents = json.loads(open(config_reader.intents_path).read())
-words = pickle.load(open(config_reader.words_path, 'wb'))
-classes = pickle.load(open(config_reader.classes_path, 'wb'))
+classes = pickle.load(open(config_reader.classes_path, 'rb'))
+words = pickle.load(open(config_reader.words_path, 'rb'))
 
 def clean_up_sentence(sentence):
     # tokenize the pattern - split words into array
     sentence_words = nltk.word_tokenize(sentence)
     # stem each word - create short form for word
-    sentence_words = [lemmatizer.lemmatize(word.lower() for word in sentence_words)]
+    sentence_words = [lemmatizer.lemmatize(word.lower()) for word in sentence_words]
 
     return sentence_words
 
@@ -56,7 +58,7 @@ def get_response(ints, intents_json):
     # get first intent(most probability intent)
     tag = ints[0]['intent']
 
-    list_of_intents = intents_json['intent']
+    list_of_intents = intents_json['intents']
     for intent in list_of_intents:
         if intent['tag'] == tag:
             result = random.choice(intent['responses'])
@@ -69,6 +71,13 @@ def chatbot_response(text):
     result = get_response(ints, intents)
 
     return result
+
+print('please start chatting...')
+user_input = ''
+while(user_input != 'bye'):
+  user_input = input()
+  print(chatbot_response(user_input))
+  
 
 
 

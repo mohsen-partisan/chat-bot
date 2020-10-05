@@ -9,21 +9,17 @@ import config_reader
 
 
 
-def create_and_train_model(train_data, classes):
+def create_and_train_model(train_x, train_y):
     model = Sequential()
-    model.add(Dense(128, input_shape=(len(train_data),), activation='relu'))
+    model.add(Dense(128, input_shape=(len(train_x[0]),), activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(len(classes), activation='softmax'))
-
-    # Compile model
+    model.add(Dense(len(train_y[0]), activation='softmax'))
+    # Compile model. Stochastic gradient descent with Nesterov accelerated gradient gives good results for this model
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-
-    #fitting and saving the model
-    trained_model = model.fit(np.array(train_data), np.array(classes),
-              epochs=200, batch_size=5, verbose=1)
-    model.save(config_reader.model_path, trained_model)
-
-    print('model created...')
+    #fitting and saving the model 
+    hist = model.fit(np.array(train_x), np.array(train_y), epochs=200, batch_size=5, verbose=1)
+    model.save('chatbot_model.h5', hist)
+    print("model created")
